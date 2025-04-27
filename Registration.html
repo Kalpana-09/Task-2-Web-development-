@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Styled Form Validation</title>
+  <style>
+    body {
+      background-color: #e0f7fa;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: #fff;
+      padding: 20px 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 350px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      color: #555;
+    }
+
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    input:focus {
+      border-color: #007bff;
+      outline: none;
+    }
+
+    .error {
+      color: red;
+      font-size: 0.85em;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #218838;
+    }
+  </style>
+  <script>
+    function validateName() {
+      const name = document.getElementById("name").value.trim();
+      const nameError = document.getElementById("nameError");
+      const regex = /^[a-zA-Z\s]+$/;
+
+      if (!name) {
+        nameError.textContent = "Name is required.";
+        return false;
+      } else if (!regex.test(name)) {
+        nameError.textContent = "Name can only contain letters and spaces.";
+        return false;
+      } else {
+        nameError.textContent = "";
+        return true;
+      }
+    }
+
+    function validatePassword() {
+      const password = document.getElementById("password").value;
+      const passwordError = document.getElementById("passwordError");
+
+      if (!password) {
+        passwordError.textContent = "Password is required.";
+        return false;
+      } else if (password.length < 6) {
+        passwordError.textContent = "Password must be at least 6 characters long.";
+        return false;
+      } else {
+        passwordError.textContent = "";
+        return true;
+      }
+    }
+
+    function validateEmail() {
+      const email = document.getElementById("email").value.trim();
+      const emailError = document.getElementById("emailError");
+      const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+      if (!email) {
+        emailError.textContent = "Email is required.";
+        return false;
+      } else if (!regex.test(email)) {
+        emailError.textContent = "Enter a valid email address.";
+        return false;
+      } else {
+        emailError.textContent = "";
+        return true;
+      }
+    }
+
+    function validateMobile() {
+      const mobile = document.getElementById("mobile").value.trim();
+      const mobileError = document.getElementById("mobileError");
+      const regex = /^[0-9]{10}$/;
+
+      if (!mobile) {
+        mobileError.textContent = "Mobile number is required.";
+        return false;
+      } else if (!regex.test(mobile)) {
+        mobileError.textContent = "Enter a valid 10-digit mobile number.";
+        return false;
+      } else {
+        mobileError.textContent = "";
+        return true;
+      }
+    }
+
+    function validateForm() {
+      const isNameValid = validateName();
+      const isPasswordValid = validatePassword();
+      const isEmailValid = validateEmail();
+      const isMobileValid = validateMobile();
+
+      if (isNameValid && isPasswordValid && isEmailValid && isMobileValid) {
+        // Collect data for the success message
+        const name = document.getElementById("name").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const mobile = document.getElementById("mobile").value.trim();
+
+        // Display the success message with the details
+        const successMessage = `
+          <h2>Registration Successful!</h2>
+          <div>
+            <p><strong>Name:</strong> ${name}</p>
+            <p><strong>Email:</strong> ${email}</p>
+            <p><strong>Mobile Number:</strong> ${mobile}</p>
+          </div>
+        `;
+
+        document.querySelector(".container").innerHTML = successMessage;
+        return false; // Prevent form submission (for demo purposes)
+      } else {
+        alert("Please fix the errors in the form.");
+        return false;
+      }
+    }
+  </script>
+</head>
+<body>
+  <div class="container">
+    <h1>Form Validation</h1>
+    <form onsubmit="return validateForm()">
+      <label for="name">Name:</label>
+      <input type="text" id="name" onblur="validateName()" />
+      <span id="nameError" class="error"></span>
+
+      <label for="password">Password:</label>
+      <input type="password" id="password" onblur="validatePassword()" />
+      <span id="passwordError" class="error"></span>
+
+      <label for="email">Email:</label>
+      <input type="email" id="email" onblur="validateEmail()" />
+      <span id="emailError" class="error"></span>
+
+      <label for="mobile">Mobile Number:</label>
+      <input type="text" id="mobile" onblur="validateMobile()" maxlength="10" />
+      <span id="mobileError" class="error"></span>
+
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+</body>
+</html>

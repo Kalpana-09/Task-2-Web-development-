@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Task Manager with Dynamic Gallery</title>
+  <style>
+    /* General Styles */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: linear-gradient(to right, #ff7e5f, #feb47b); /* Gradient background */
+      background-attachment: fixed;
+    }
+
+    h2 {
+      color: #333;
+      font-size: 24px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      margin-bottom: 30px;
+      padding: 20px;
+    }
+
+    .todo-container, .gallery-container {
+      margin-bottom: 30px;
+    }
+
+    /* Task Manager Styles */
+    .todo-container {
+      padding: 20px;
+      border-bottom: 2px solid #eee;
+    }
+
+    #taskInput {
+      width: 75%;
+      padding: 12px;
+      margin-right: 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    #taskInput:focus {
+      border-color: #4CAF50;
+    }
+
+    .todo-container button, .upload-btn {
+      padding: 12px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
+
+    .todo-container button:hover, .upload-btn:hover {
+      background-color: #45a049;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      background-color: #f9f9f9;
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      font-size: 16px;
+    }
+
+    li button {
+      background-color: #f44336;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: none;
+      font-size: 18px;
+    }
+
+    li button:hover {
+      background-color: #e53935;
+    }
+
+    /* Gallery Section Styles */
+    .gallery-container {
+      padding: 20px;
+      text-align: center;
+    }
+
+    .gallery {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    .gallery-item {
+      position: relative;
+      width: 180px;
+      height: 180px;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s;
+    }
+
+    .gallery-item:hover {
+      transform: scale(1.05);
+    }
+
+    .gallery img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .remove-btn {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background-color: #f44336;
+      color: white;
+      border: none;
+      padding: 6px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 16px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .remove-btn:hover {
+      background-color: #e53935;
+    }
+
+    /* File Input Styles */
+    .file-input {
+      display: none;
+    }
+
+    /* Responsiveness */
+    @media (max-width: 768px) {
+      #taskInput {
+        width: 60%;
+      }
+
+      .gallery-item {
+        width: 140px;
+        height: 140px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      #taskInput {
+        width: 50%;
+      }
+
+      .gallery-item {
+        width: 120px;
+        height: 120px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Task Manager Section -->
+  <div class="container todo-container">
+    <h2>Task Manager</h2>
+    <div class="clearfix">
+      <input type="text" id="taskInput" placeholder="Enter a task" class="task-input">
+      <button onclick="addTask()">Add Task</button>
+    </div>
+    <ul id="taskList"></ul>
+  </div>
+
+  <!-- Dynamic Gallery Section -->
+  <div class="container gallery-container">
+    <h2>Dynamic Gallery</h2>
+    <div class="gallery" id="gallery"></div>
+
+    <input type="file" id="fileInput" class="file-input" accept="image/*" onchange="addImage(event)">
+    <button class="upload-btn" onclick="document.getElementById('fileInput').click()">Choose File to Add Image</button>
+  </div>
+
+  <script>
+    // Add Task to To-Do List
+    function addTask() {
+      const input = document.getElementById("taskInput");
+      const task = input.value.trim();
+
+      if (task === "") {
+        alert("Please enter a task.");
+        return;
+      }
+      if (task.length < 3) {
+        alert("Task must be at least 3 characters.");
+        return;
+      }
+
+      const li = document.createElement("li");
+      li.textContent = task;
+
+      const delBtn = document.createElement("button");
+      delBtn.textContent = "❌";
+      delBtn.onclick = () => li.remove();
+
+      li.appendChild(delBtn);
+      document.getElementById("taskList").appendChild(li);
+      input.value = ""; // Clear the input field after adding the task
+    }
+
+    // Add Image to Gallery
+    function addImage(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const gallery = document.getElementById("gallery");
+
+          // Create a container for the image
+          const galleryItem = document.createElement("div");
+          galleryItem.classList.add("gallery-item");
+
+          // Create an image element
+          const img = document.createElement("img");
+          img.src = e.target.result;
+
+          // Create the remove button
+          const removeBtn = document.createElement("button");
+          removeBtn.textContent = "❌";
+          removeBtn.classList.add("remove-btn");
+          removeBtn.onclick = function() {
+            galleryItem.remove();
+          };
+
+          galleryItem.appendChild(img);
+          galleryItem.appendChild(removeBtn);
+          gallery.appendChild(galleryItem);
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+  </script>
+
+</body>
+</html>
